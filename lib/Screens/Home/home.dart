@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/Bloc/weather_bloc.dart';
-import 'package:weather_app/Bloc/weather_event.dart';
 import 'package:weather_app/Bloc/weather_state.dart';
 import 'package:weather_app/Screens/Home/components/city_weather_container.dart';
-import 'package:weather_app/Screens/Home/components/search_bar.dart';
+import 'package:weather_app/Screens/Home/search_dialog.dart';
+import 'package:weather_app/Utils/screen_size_mixin.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,8 +13,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController _cityNameController = TextEditingController();
+class _HomeScreenState extends State<HomeScreen> with ScreenSizeMixin {
   final formState = GlobalKey<FormState>();
 
   @override
@@ -25,15 +24,21 @@ class _HomeScreenState extends State<HomeScreen> {
           return const Center(
             child: CircularProgressIndicator(),
           );
+        } else if (state is AutoCompleteSearchState) {
+          return const Scaffold(
+            backgroundColor: Color(0xff98c8e0),
+          );
         } else if (state is InitialWeatherState) {
           final weatherList = state.weatherData;
           return Scaffold(
             floatingActionButton: FloatingActionButton(
               backgroundColor: const Color(0xcf77b3d0),
               onPressed: () {
-                BlocProvider.of<WeatherBloc>(context)
-                 .add(StartingFetchEvent(city: 'Tel Aviv'));
-                _cityNameController.clear();
+                showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (context) => const SearchDialog(),
+                );
               },
               child: const Icon(Icons.add),
             ),
@@ -41,16 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
             body: SafeArea(
               child: SizedBox.expand(
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     children: [
-                      Flexible(
-                        child: Form(
-                            key: formState,
-                            child: CitySearchBar(
-                              searchController: _cityNameController,
-                            ),),
-                      ),
                       Flexible(
                         flex: 10,
                         child: Padding(

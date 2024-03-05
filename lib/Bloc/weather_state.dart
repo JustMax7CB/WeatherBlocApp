@@ -10,6 +10,12 @@ class InitialWeatherState extends WeatherBlocState {
   final List<WeatherModel> weatherData;
 }
 
+class AutoCompleteSearchState extends WeatherBlocState {
+
+  AutoCompleteSearchState({required this.cities});
+  final List<String> cities;
+}
+
 class FetchedWeatherState extends WeatherBlocState {
 
   FetchedWeatherState({required this.data});

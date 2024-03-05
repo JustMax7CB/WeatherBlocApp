@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class CitySearchBar extends StatelessWidget {
 
-  const CitySearchBar({required this.searchController, super.key});
+  const CitySearchBar({ required this.onChangeCallback,required this.searchController, super.key});
   final TextEditingController searchController;
+  final Function(String) onChangeCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +14,11 @@ class CitySearchBar extends StatelessWidget {
         maxHeight: 45,
       ),
       child: TextFormField(
+        onChanged: (cityString) {
+          if (cityString.length >= 3) {
+            onChangeCallback(cityString);
+          }
+        },
         controller: searchController,
         decoration: InputDecoration(
           suffixIcon: const Icon(Icons.search),

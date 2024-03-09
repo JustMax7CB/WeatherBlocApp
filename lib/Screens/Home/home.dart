@@ -26,13 +26,14 @@ class _HomeScreenState extends State<HomeScreen> with ScreenSizeMixin {
           );
         } else if (state is AutoCompleteSearchState) {
           return const Scaffold(
-            backgroundColor: Color(0xff98c8e0),
+            backgroundColor: Color(0xffb3d6f3),
           );
         } else if (state is InitialWeatherState) {
           final weatherList = state.weatherData;
           return Scaffold(
             floatingActionButton: FloatingActionButton(
-              backgroundColor: const Color(0xcf77b3d0),
+              elevation: 0,
+              backgroundColor: const Color(0xc07abef6),
               onPressed: () {
                 showDialog(
                   barrierDismissible: false,
@@ -42,11 +43,11 @@ class _HomeScreenState extends State<HomeScreen> with ScreenSizeMixin {
               },
               child: const Icon(Icons.add),
             ),
-            backgroundColor: const Color(0xff98c8e0),
+            backgroundColor: const Color(0xffb3d6f3),
             body: SafeArea(
               child: SizedBox.expand(
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Column(
                     children: [
                       Flexible(
@@ -54,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> with ScreenSizeMixin {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 20),
                           child: ListView.builder(
-                            physics: const ClampingScrollPhysics(),
+                            physics: const BouncingScrollPhysics(),
                             itemCount: weatherList.length,
                             itemBuilder: (context, index) {
                               return CityWeatherContainer(

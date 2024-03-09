@@ -43,19 +43,21 @@ class CityWeatherContainer extends StatelessWidget {
           ),
           children: [
             SlidableAction(
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
               onPressed: (context) => BlocProvider.of<WeatherBloc>(context)
                   .add(DeleteCityEvent(cityName: cityName)),
-              backgroundColor: const Color(0xFFFE4A49),
+              backgroundColor: const Color(0xFFC40B0A),
               foregroundColor: Colors.white,
               icon: Icons.delete,
             ),
             SlidableAction(
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
               onPressed: (_) {
                 Share.share(
                   '$cityName, $countryName weather data:\nTemperature: $temperature°C',
                 );
               },
-              backgroundColor: const Color(0xFF21B7CA),
+              backgroundColor: const Color(0xFF2AB7CA),
               foregroundColor: Colors.white,
               icon: Icons.share,
             ),

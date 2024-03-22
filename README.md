@@ -1,6 +1,7 @@
-# weather_app
+# Weather 
 
-Weather application using bloc
+Weather application created using Flutter
+utilizing various packages and tools. such as BloC state management, Sqflite for DB. http for api requests and more...
 
 ## Getting Started
 

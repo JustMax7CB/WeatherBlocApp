@@ -9,7 +9,6 @@ import 'package:weather_app/Repository/weather_repository.dart';
 import 'package:weather_app/Utils/logger.dart';
 
 class WeatherBloc extends Bloc<WeatherBlocEvent, WeatherBlocState> {
-
   WeatherBloc({required WeatherRepository weatherRepository})
       : _weatherRepository = weatherRepository,
         super(LoadingWeatherState()) {
@@ -17,7 +16,9 @@ class WeatherBloc extends Bloc<WeatherBlocEvent, WeatherBlocState> {
     on<InitialLoadEvent>(_initialLoadWeather);
     on<DeleteCityEvent>(_deleteCityWeatherData);
     on<StartAutocompleteSearchEvent>(_startAutocompleteSearch);
+    on<UpdateDataEvent>(_updateWeatherData);
   }
+
   static List<String>? allCityNames;
 
   final WeatherRepository _weatherRepository;
@@ -32,13 +33,17 @@ class WeatherBloc extends Bloc<WeatherBlocEvent, WeatherBlocState> {
     allCityNames = data.cast<String>(); // Cast the list to a list of strings
   }
 
-  Future<void> _startAutocompleteSearch(StartAutocompleteSearchEvent event,
-      Emitter<WeatherBlocState> emit,) async {
+  Future<void> _startAutocompleteSearch(
+    StartAutocompleteSearchEvent event,
+    Emitter<WeatherBlocState> emit,
+  ) async {
     final searchedCityName = event.currentString;
     if (allCityNames == null) await loadCities();
     final relevantCities = allCityNames!
-        .where((cityName) =>
-            cityName.toLowerCase().startsWith(searchedCityName.toLowerCase()),)
+        .where(
+          (cityName) =>
+              cityName.toLowerCase().startsWith(searchedCityName.toLowerCase()),
+        )
         .toList();
     print(relevantCities);
     emit(AutoCompleteSearchState(cities: relevantCities));
@@ -62,14 +67,38 @@ class WeatherBloc extends Bloc<WeatherBlocEvent, WeatherBlocState> {
   }
 
   Future<void> _initialLoadWeather(
-      InitialLoadEvent event, Emitter<WeatherBlocState> emit,) async {
+    InitialLoadEvent event,
+    Emitter<WeatherBlocState> emit,
+  ) async {
     final weatherData = await _weatherRepository.getAllSavedWeatherData();
     _weatherList.addAll(weatherData);
+    emit(InitialWeatherState(weatherData: _weatherList, toUpdate: true));
+    final savedCities = weatherData.map((e) => e.name).toList();
+    _weatherList.clear();
+    _logger.info('Updating weather data of saved cities');
+    for (final city in savedCities) {
+      final cityWeatherData = await _weatherRepository.getCityWeatherData(cityName: city);
+      _weatherList.add(cityWeatherData);
+    }
+    emit(InitialWeatherState(weatherData: _weatherList));
+  }
+
+  Future<void> _updateWeatherData(UpdateDataEvent event, Emitter<WeatherBlocState> emit) async {
+    emit(LoadingWeatherState());
+    _weatherList.clear();
+    final savedCities = await _weatherRepository.getAllSavedCities();
+    _logger.info('Updating weather data of saved cities');
+    for (final city in savedCities) {
+      final cityWeatherData = await _weatherRepository.getCityWeatherData(cityName: city);
+      _weatherList.add(cityWeatherData);
+    }
     emit(InitialWeatherState(weatherData: _weatherList));
   }
 
   Future<void> _deleteCityWeatherData(
-      DeleteCityEvent event, Emitter<WeatherBlocState> emit,) async {
+    DeleteCityEvent event,
+    Emitter<WeatherBlocState> emit,
+  ) async {
     await _weatherRepository.deleteCityData(event.cityName);
     _weatherList.removeWhere((cityData) => cityData.name == event.cityName);
     emit(InitialWeatherState(weatherData: _weatherList));

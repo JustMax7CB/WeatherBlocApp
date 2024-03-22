@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:weather_app/API/Response/weather_response.dart';
 
 class WeatherModel {
@@ -36,6 +37,12 @@ class WeatherModel {
         'iconUrl': icon,
         'timestamp': timestamp,
       };
+  
+  String get timeToDisplay {
+    final dateTime = DateTime.parse(timestamp!);
+    final milliseconds = DateTime.fromMillisecondsSinceEpoch(dateTime.millisecondsSinceEpoch);
+    return DateFormat('dd/MM/yyyy HH:mm').format(milliseconds);
+  }
 
   @override
   String toString() {

@@ -50,7 +50,7 @@ class DbManager {
   Future<void> insertData(Map<String, dynamic> data) async {
     _logger.info('Inserting data: $data');
     final db = await database;
-    await db.insert(tableName, data);
+    await db.insert(tableName, data,conflictAlgorithm: ConflictAlgorithm.replace,);
   }
 
   Future<void> deleteData(String primaryKeyValue) async {
@@ -82,6 +82,13 @@ class DbManager {
     _logger.info('Getting all data');
     final db = await database;
     final List<Map<String, dynamic>> data = await db.query(tableName);
+    return data;
+  }
+
+  Future<List<Map<String, dynamic>>> getOneColumnData(String columnKey) async {
+    _logger.info('Getting all data from on column with key $columnKey');
+    final db = await database;
+    final List<Map<String, dynamic>> data = await db.query(tableName, columns: [columnKey]);
     return data;
   }
 }

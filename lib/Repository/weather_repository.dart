@@ -31,6 +31,12 @@ class WeatherRepository {
     return weatherModelList;
   }
 
+  Future<List<String>> getAllSavedCities() async {
+    _logger.info('getAllSavedCities');
+    final data = await _weatherTableHandler.getSavedCities();
+    return data;
+  }
+
   Future<void> deleteCityData(String cityName) async {
     _logger.info('deleteCityData: $cityName');
     await _weatherTableHandler.deleteWeatherData(cityName);

@@ -24,7 +24,14 @@ class WeatherTableHandler {
   Future<List<Map<String, dynamic>>> getAllWeatherData() async {
     _logger.debug('getAllWeatherData');
     final allData = await dbManager.getAllData();
-    _logger.debug('getAllWeatherData: $allData');
+    _logger.debug('getAllWeatherData result: $allData');
     return allData;
+  }
+
+  Future<List<String>> getSavedCities() async {
+    _logger.debug('getSavedCities');
+    final savedCities = await dbManager.getOneColumnData(DbManager.columnName);
+    _logger.debug('getSavedCities result: $savedCities');
+    return savedCities.map((e) => e.values.first as String).toList();
   }
 }

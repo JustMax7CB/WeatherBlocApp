@@ -8,6 +8,10 @@ class StartingFetchEvent extends WeatherBlocEvent {
   final String city;
 }
 
+class UpdateDataEvent extends WeatherBlocEvent {
+  UpdateDataEvent();
+}
+
 class StartAutocompleteSearchEvent extends WeatherBlocEvent {
 
   StartAutocompleteSearchEvent({required this.currentString});

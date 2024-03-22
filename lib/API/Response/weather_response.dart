@@ -4,7 +4,7 @@ class WeatherAPIResponse {
     required this.country,
     required this.temp,
     required this.icon,
-  }) : timestamp = DateTime.now();
+  }) : timestamp = DateTime.now().toLocal();
 
   factory WeatherAPIResponse.fromJson(Map<String, dynamic> json) =>
       WeatherAPIResponse(
